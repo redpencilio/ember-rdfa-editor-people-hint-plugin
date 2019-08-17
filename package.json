@@ -1,7 +1,7 @@
 {
-  "name": "ember-rdfa-editor-people-hint-plugin",
+  "name": "@lblod/ember-rdfa-editor-people-hint-plugin",
   "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "Hint people according to the current selection.",
   "keywords": [
     "ember-addon"
   ],
