@@ -1,7 +1,9 @@
+/* eslint-disable require-yield */
 import { getOwner } from '@ember/application';
 import Service from '@ember/service';
 import EmberObject, { computed } from '@ember/object';
 import { task } from 'ember-concurrency';
+import { inject as service } from '@ember/service';
 
 /**
  * Service responsible for correct annotation of dates
@@ -12,10 +14,18 @@ import { task } from 'ember-concurrency';
  * @extends EmberService
  */
 const RdfaEditorPeopleHintPlugin = Service.extend({
+  store: service(),
 
-  init(){
+  people: computed(function(){
+    // TODO: Take care of pagination
+    return this.store.peekAll('person').sortBy('firstname');
+  }),
+
+  async init(){
     this._super(...arguments);
     const config = getOwner(this).resolveRegistration('config:environment');
+    // TODO: Take care of pagination
+    await this.store.findAll('person');
   },
 
   /**
@@ -34,13 +44,12 @@ const RdfaEditorPeopleHintPlugin = Service.extend({
     if (contexts.length === 0) return [];
 
     const hints = [];
-    contexts.forEach((context) => {
-      let relevantContext = this.detectRelevantContext(context)
-      if (relevantContext) {
+    contexts
+      .filter(this.detectRelevantContext)
+      .forEach((context) => {
         hintsRegistry.removeHintsInRegion(context.region, hrId, this.get('who'));
         hints.pushObjects(this.generateHintsForContext(context));
-      }
-    });
+      });
     const cards = hints.map( (hint) => this.generateCard(hrId, hintsRegistry, editor, hint));
     if(cards.length > 0){
       hintsRegistry.addHints(hrId, this.get('who'), cards);
@@ -59,10 +68,9 @@ const RdfaEditorPeopleHintPlugin = Service.extend({
    * @private
    */
   detectRelevantContext(context){
-    return context.text.toLowerCase().indexOf('hello') >= 0;
+    let lastTriple = context.context.slice(-1)[0];
+    return lastTriple.datatype == 'http://xmlns.com/foaf/0.1/person';
   },
-
-
 
   /**
    * Maps location of substring back within reference location
@@ -120,11 +128,22 @@ const RdfaEditorPeopleHintPlugin = Service.extend({
    * @private
    */
   generateHintsForContext(context){
+    // TODO: This is the original generated code. It should be removed once we get confident with the code
+    // const hints = [];
+    // const index = context.text.toLowerCase().indexOf('hello');
+    // const text = context.text.slice(index, index+5);
+    // const location = this.normalizeLocation([index, index + 5], context.region);
+    // hints.push({text, location});
+
+    const triple = context.context.slice(-1)[0];
     const hints = [];
-    const index = context.text.toLowerCase().indexOf('hello');
-    const text = context.text.slice(index, index+5);
-    const location = this.normalizeLocation([index, index + 5], context.region);
-    hints.push({text, location});
+    const value = triple.object;
+    const content= triple.content;
+    const datatype = triple.datatype;
+    const text = context.text || '';
+    const location = context.region;
+    hints.push({text, location, context, value, content, datatype});
+
     return hints;
   }
 });

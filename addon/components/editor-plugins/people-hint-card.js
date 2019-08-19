@@ -1,6 +1,7 @@
 import { reads } from '@ember/object/computed';
 import Component from '@ember/component';
 import layout from '../../templates/components/editor-plugins/people-hint-card';
+import { inject as service } from '@ember/service';
 
 /**
 * Card displaying a hint of the Date plugin
@@ -11,6 +12,8 @@ import layout from '../../templates/components/editor-plugins/people-hint-card';
 */
 export default Component.extend({
   layout,
+
+  hintPlugin: service('rdfa-editor-people-hint-plugin'),
 
   /**
    * Region on which the card applies
@@ -48,7 +51,7 @@ export default Component.extend({
     insert(){
       this.get('hintsRegistry').removeHintsAtLocation(this.get('location'), this.get('hrId'), 'editor-plugins/people-hint-card');
       const mappedLocation = this.get('hintsRegistry').updateLocationToCurrentIndex(this.get('hrId'), this.get('location'));
-      this.get('editor').replaceTextWithHTML(...mappedLocation, this.get('info').htmlString);
+      this.get('editor').replaceTextWithHTML(...mappedLocation, `<b>${this.selectedPerson.firstname} ${this.selectedPerson.lastname}</b>`);
     }
   }
 });
