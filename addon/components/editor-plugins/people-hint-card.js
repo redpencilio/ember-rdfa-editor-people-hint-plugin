@@ -49,9 +49,19 @@ export default Component.extend({
 
   actions: {
     insert(){
-      this.get('hintsRegistry').removeHintsAtLocation(this.get('location'), this.get('hrId'), 'editor-plugins/people-hint-card');
       const mappedLocation = this.get('hintsRegistry').updateLocationToCurrentIndex(this.get('hrId'), this.get('location'));
-      this.get('editor').replaceTextWithHTML(...mappedLocation, `<b>${this.selectedPerson.firstname} ${this.selectedPerson.lastname}</b>`);
+      this.get('hintsRegistry').removeHintsAtLocation(mappedLocation, this.get('hrId'), 'editor-plugins/people-hint-card');
+
+      const selection = this.editor.selectHighlight(mappedLocation);
+      this.editor.update(selection, {
+        set: {
+          property: 'ns:aProperty',
+          datatype: 'foaf:person',
+          content: this.selectedPerson.id,
+          innerHTML: this.selectedPerson.firstname + ' ' + this.selectedPerson.lastname
+        }
+      });
+      this.hintsRegistry.removeHintsAtLocation(this.location, this.hrId, this.who);
     }
   }
 });

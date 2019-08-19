@@ -15,7 +15,7 @@
 </div>
 
 <div class="modal-dialog__content">
-  <ol class="w-full">
+  <ul class="w-full">
     {{!-- TODO: Take care of pagination --}}
     {{#each hintPlugin.people as |person|}}
       <li class="link-list__item {{if (eq selectedPerson person) "border border-teal-500"}}">
@@ -25,7 +25,7 @@
         </a>
       </li>
     {{/each}}
-  </ol>
+  </ul>
 </div>
 
 <div class="modal-dialog__footer">
