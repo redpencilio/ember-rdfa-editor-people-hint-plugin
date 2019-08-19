@@ -1,7 +1,7 @@
 {
   "name": "@lblod/ember-rdfa-editor-people-hint-plugin",
   "version": "0.0.0",
-  "description": "Hint people according to the current selection.",
+  "description": "Hint people according to the current selection in an instance of rdfa-editor.",
   "keywords": [
     "ember-addon"
   ],
