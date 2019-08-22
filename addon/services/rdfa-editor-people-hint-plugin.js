@@ -107,7 +107,8 @@ const RdfaEditorPeopleHintPlugin = Service.extend({
       info: {
         label: this.get('who'),
         plainValue: hint.text,
-        htmlString: '<b>hello world</b>',
+        value: hint.value,
+        datatype: hint.datatype,
         location: hint.location,
         hrId, hintsRegistry, editor
       },

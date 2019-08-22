@@ -52,11 +52,9 @@ export default Component.extend({
       const mappedLocation = this.get('hintsRegistry').updateLocationToCurrentIndex(this.get('hrId'), this.get('location'));
       this.get('hintsRegistry').removeHintsAtLocation(mappedLocation, this.get('hrId'), 'editor-plugins/people-hint-card');
 
-      const selection = this.editor.selectHighlight(mappedLocation);
+      const selection = this.editor.selectContext(mappedLocation, { datatype: this.info.datatype });
       this.editor.update(selection, {
         set: {
-          property: 'ns:aProperty',
-          datatype: 'foaf:person',
           content: this.selectedPerson.id,
           innerHTML: this.selectedPerson.firstname + ' ' + this.selectedPerson.lastname
         }
