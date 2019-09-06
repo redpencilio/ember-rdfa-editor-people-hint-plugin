@@ -139,11 +139,11 @@ const RdfaEditorPeopleHintPlugin = Service.extend({
     const triple = context.context.slice(-1)[0];
     const hints = [];
     const value = triple.object;
-    const content= triple.content;
+    const resource = triple.resource;
     const datatype = triple.datatype;
     const text = context.text || '';
     const location = context.region;
-    hints.push({text, location, context, value, content, datatype});
+    hints.push({text, location, context, value, resource, datatype});
 
     return hints;
   }
