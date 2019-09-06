@@ -69,7 +69,7 @@ const RdfaEditorPeopleHintPlugin = Service.extend({
    */
   detectRelevantContext(context){
     let lastTriple = context.context.slice(-1)[0];
-    return lastTriple.datatype == 'http://xmlns.com/foaf/0.1/person';
+    return lastTriple.predicate === 'a' && lastTriple.object === 'http://xmlns.com/foaf/0.1/Person';
   },
 
   /**
