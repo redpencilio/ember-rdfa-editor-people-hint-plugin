@@ -52,13 +52,15 @@ export default Component.extend({
       const mappedLocation = this.get('hintsRegistry').updateLocationToCurrentIndex(this.get('hrId'), this.get('location'));
       this.get('hintsRegistry').removeHintsAtLocation(mappedLocation, this.get('hrId'), 'editor-plugins/people-hint-card');
 
-      const selection = this.editor.selectContext(mappedLocation, {});
+      const selection = this.editor.selectContext(mappedLocation, { resource: this.info.resource });
+
       this.editor.update(selection, {
         set: {
-          content: this.selectedPerson.id,
+          resource: 'http://redpencil.io/notable/' + this.selectedPerson.id,
           innerHTML: this.selectedPerson.firstname + ' ' + this.selectedPerson.lastname
         }
       });
+
       this.hintsRegistry.removeHintsAtLocation(this.location, this.hrId, this.who);
     }
   }

@@ -44,13 +44,15 @@ const RdfaEditorPeopleHintPlugin = Service.extend({
     if (contexts.length === 0) return [];
 
     const hints = [];
-    contexts
-      .filter(this.detectRelevantContext)
-      .forEach((context) => {
-        hintsRegistry.removeHintsInRegion(context.region, hrId, this.get('who'));
-        hints.pushObjects(this.generateHintsForContext(context));
-      });
+    const relevantContexts = contexts.filter(this.detectRelevantContext);
+
+    relevantContexts.forEach((context) => {
+      hintsRegistry.removeHintsInRegion(context.region, hrId, this.get('who'));
+      hints.pushObjects(this.generateHintsForContext(context));
+    });
+
     const cards = hints.map( (hint) => this.generateCard(hrId, hintsRegistry, editor, hint));
+
     if(cards.length > 0){
       hintsRegistry.addHints(hrId, this.get('who'), cards);
     }
@@ -108,7 +110,7 @@ const RdfaEditorPeopleHintPlugin = Service.extend({
         label: this.get('who'),
         plainValue: hint.text,
         value: hint.value,
-        datatype: hint.datatype,
+        resource: hint.resource,
         location: hint.location,
         hrId, hintsRegistry, editor
       },
@@ -129,21 +131,12 @@ const RdfaEditorPeopleHintPlugin = Service.extend({
    * @private
    */
   generateHintsForContext(context){
-    // TODO: This is the original generated code. It should be removed once we get confident with the code
-    // const hints = [];
-    // const index = context.text.toLowerCase().indexOf('hello');
-    // const text = context.text.slice(index, index+5);
-    // const location = this.normalizeLocation([index, index + 5], context.region);
-    // hints.push({text, location});
-
     const triple = context.context.slice(-1)[0];
     const hints = [];
-    const value = triple.object;
-    const resource = triple.resource;
-    const datatype = triple.datatype;
+    const resource = triple.subject;
     const text = context.text || '';
     const location = context.region;
-    hints.push({text, location, context, value, resource, datatype});
+    hints.push({text, location, context, resource});
 
     return hints;
   }
